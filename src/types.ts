@@ -18,6 +18,10 @@ export interface PkgSize {
     publishFiles: number;
     installFiles: number;
     disabled?: boolean;
+    isRc?: boolean;
+    isBeta?: boolean;
+    exports?: string[];
+    selectedExports?: string[];
 }
 
 export interface ApiResponseV1 {
@@ -45,6 +49,8 @@ export interface ResultProps {
     cacheResult: boolean;
     isLatest: boolean;
     inputStr: string;
+    availableTags?: { [tag: string]: string };
+    availableExports?: string[];
 }
 
 export interface ComparePackage {
@@ -65,12 +71,20 @@ export interface ParsedUrlQuery {
 export interface NpmManifest {
     name: string;
     description: string;
-    versions: { [version: string]: any };
+    versions: { [version: string]: NpmPackageVersion };
+    allVersions?: string[];
     modified: string;
     'dist-tags': {
         latest: string;
         [tag: string]: string;
     };
+}
+
+export interface NpmPackageVersion {
+    name: string;
+    version: string;
+    exports?: { [exportPath: string]: any };
+    [key: string]: any;
 }
 
 export interface PackageJson {

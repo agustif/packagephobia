@@ -30,7 +30,8 @@ export async function fetchManifest(name: string) {
     cachedManifest = {
         name: manifest.name,
         description: manifest.description,
-        versions: getAllVersions(manifest),
+        versions: manifest.versions,
+        allVersions: getAllVersions(manifest),
         modified: manifest.modified,
         'dist-tags': manifest['dist-tags'],
     };
@@ -122,6 +123,28 @@ export function getVersionsForChart(allVersions: string[], version: string, coun
     }
 
     return allVersions.slice(start, end);
+}
+
+/**
+ * Get the exports map for a specific version
+ */
+export function getExportsForVersion(manifest: NpmManifest, version: string): string[] {
+    const versionData = manifest.versions[version];
+    if (!versionData || !versionData.exports) {
+        return [];
+    }
+    return Object.keys(versionData.exports).filter(key => key !== '.');
+}
+
+/**
+ * Check if a version is an rc or beta version
+ */
+export function isRcVersion(version: string): boolean {
+    return version.includes('-rc');
+}
+
+export function isBetaVersion(version: string): boolean {
+    return version.includes('-beta');
 }
 
 /**

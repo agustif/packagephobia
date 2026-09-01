@@ -30,12 +30,13 @@ export async function getResultProps(
     const { name, version } = pkgSize;
     const tagToVersion = getAllDistTags(manifest);
 
+    const allVersionsArray = Array.isArray(allVersions) ? allVersions : [];
     const filteredVersions =
         pkgVersions.length > 1
             ? pkgVersions.map(p => tagToVersion[p.version || ''] || p.version).filter(notEmpty)
             : isFullRelease(version)
-              ? allVersions.filter(isFullRelease)
-              : allVersions;
+              ? allVersionsArray.filter(isFullRelease)
+              : allVersionsArray;
 
     const chartVersions = getVersionsForChart(filteredVersions, version, 7);
 
@@ -55,12 +56,16 @@ export async function getResultProps(
         );
     });
 
+    const availableExports = pkgSize.exports || [];
+
     return {
         pkgSize,
         readings,
         cacheResult,
         isLatest,
         inputStr,
+        availableTags: tagToVersion,
+        availableExports,
     };
 }
 

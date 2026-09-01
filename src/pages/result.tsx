@@ -8,6 +8,8 @@ import Footer from '../components/Footer';
 import Image from '../components/Image';
 import LinkedLogos from '../components/LinkedLogos';
 import Sponsors from '../components/Sponsors';
+import DistTags from '../components/dist-tags';
+import SubpackagePicker from '../components/subpackage-picker';
 
 import { pages, versionUnknown } from '../util/constants';
 import { getReadableFileSize } from '../util/npm-parser';
@@ -20,7 +22,7 @@ const error: React.CSSProperties = {
     textAlign: 'center',
 };
 
-export default ({ pkgSize, readings, isLatest, inputStr }: ResultProps) => {
+export default ({ pkgSize, readings, isLatest, inputStr, availableTags, availableExports }: ResultProps) => {
     const exists = pkgSize.version !== versionUnknown;
     const install = getReadableFileSize(pkgSize.installSize);
     const publish = getReadableFileSize(pkgSize.publishSize);
@@ -31,6 +33,10 @@ export default ({ pkgSize, readings, isLatest, inputStr }: ResultProps) => {
         <>
             <PageContainer>
                 <SearchBar autoFocus={false} defaultValue={inputStr} />
+
+                {exists && availableTags && (
+                    <DistTags packageName={pkgSize.name} currentVersion={pkgSize.version} tags={availableTags} />
+                )}
 
                 {exists ? (
                     <div style={{ display: 'flex', padding: '10px 0' }}>
@@ -62,6 +68,15 @@ export default ({ pkgSize, readings, isLatest, inputStr }: ResultProps) => {
                     <div className="content-container">
                         <Stats publish={publish} install={install} />
                         <BarGraph readings={readings} getHref={getHref} />
+                        {availableExports && availableExports.length > 0 && (
+                            <SubpackagePicker
+                                packageName={pkgSize.name}
+                                version={pkgSize.version}
+                                exports={availableExports}
+                                totalInstallSize={pkgSize.installSize}
+                                totalPublishSize={pkgSize.publishSize}
+                            />
+                        )}
                     </div>
                 ) : (
                     <Image width={350} height={350} file="tumblebeasts/tbstand2.png" />

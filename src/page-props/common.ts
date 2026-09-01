@@ -1,6 +1,6 @@
 import { findOne } from '../util/backend/db';
 import { insert as insertRedis } from '../util/backend/db-redis';
-import { getAllDistTags } from '../util/npm-api';
+import { getAllDistTags, getExportsForVersion, isRcVersion, isBetaVersion } from '../util/npm-api';
 import { calculatePackageSize } from '../util/backend/npm-stats';
 import { versionUnknown } from '../util/constants';
 import type { NpmManifest, PkgSize } from '../types';
@@ -30,7 +30,7 @@ export async function getPkgDetails(
         cacheResult = false;
     }
 
-    const allVersions = manifest.versions;
+    const allVersions = manifest.allVersions || [];
     if (!allVersions.includes(version)) {
         console.error(`Version ${name}@${version} does not exist in npm`);
         return packageNotFound(name);
@@ -46,6 +46,11 @@ export async function getPkgDetails(
         console.log(`Calculated size of ${name}@${version} in ${sec}s`);
         await insertRedis(pkgSize);
     }
+
+    const exports = getExportsForVersion(manifest, version);
+    pkgSize.exports = exports;
+    pkgSize.isRc = isRcVersion(version);
+    pkgSize.isBeta = isBetaVersion(version);
 
     const result = {
         pkgSize,
