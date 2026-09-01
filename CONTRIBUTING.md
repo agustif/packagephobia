@@ -63,7 +63,39 @@ npm run test
 
 ## Deploying the code
 
-Each PR is automatically deployed to [Vercel](https://vercel.com/?utm_source=packagephobia) via the [GitHub Integration](https://vercel.com/github).
+### Automatic Deployment (GitHub Actions)
+
+Each push to `main` is automatically deployed to production on [Vercel](https://vercel.com/?utm_source=packagephobia), and each PR receives a preview deployment.
+
+The deployment is handled by the `.github/workflows/vercel-deploy.yml` workflow, which requires the following GitHub secrets:
+
+- `VERCEL_TOKEN` - Your Vercel API token (create at https://vercel.com/account/tokens)
+- `VERCEL_ORG_ID` - Your Vercel team/user ID
+- `VERCEL_PROJECT_ID` - The Vercel project ID
+
+You must also set the `REDIS_URL` environment variable in your Vercel project settings (e.g., from [Upstash](https://upstash.com/?ref=packagephobia)).
+
+### Initial Setup
+
+1. **Import the GitHub repository in Vercel:**
+   - Go to https://vercel.com/new
+   - Import the `styfle/packagephobia` repository
+   - This creates the Vercel project and links it to GitHub
+
+2. **Set environment variables in Vercel:**
+   - Go to your Vercel project settings → Environment Variables
+   - Add `REDIS_URL` with your Redis connection string (required for production)
+   - Optionally add `NPM_REGISTRY_URL` if using a custom registry
+
+3. **Add GitHub secrets for the Actions workflow:**
+   - Go to GitHub repository → Settings → Secrets and variables → Actions
+   - Add `VERCEL_TOKEN`: Generate at https://vercel.com/account/tokens
+   - Add `VERCEL_ORG_ID`: Find in Vercel project settings or `.vercel/project.json` after first `vercel` CLI run
+   - Add `VERCEL_PROJECT_ID`: Find in Vercel project settings or `.vercel/project.json` after first `vercel` CLI run
+
+The Vercel dashboard integration and GitHub Actions with tokens can coexist. The dashboard integration provides automatic deployments, while the Actions workflow gives you more control and visibility in your CI pipeline.
+
+### Manual Deployment (CLI)
 
 If you want to deploy from the command line, you'll need to install [Vercel](https://vercel.com) CLI with `npm i -g vercel`.
 
