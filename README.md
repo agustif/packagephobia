@@ -137,6 +137,10 @@ Below are some other users who comically point out this JS bloat.
 | [rickhanlonii](https://twitter.com/rickhanlonii/status/1062319416107560961)
 |
 
+## Deployment
+
+To deploy your own fork, see deployment instructions in [CONTRIBUTING.md](CONTRIBUTING.md#deploying-the-code). You'll need a [Vercel](https://vercel.com) account and a Redis instance (e.g., [Upstash](https://upstash.com)).
+
 ## Contributing
 
 See [CONTRIBUTING.md](https://github.com/styfle/packagephobia/blob/main/CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](https://github.com/styfle/packagephobia/blob/main/CODE_OF_CONDUCT.md) before you start writing any code

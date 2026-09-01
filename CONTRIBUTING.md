@@ -63,11 +63,32 @@ npm run test
 
 ## Deploying the code
 
-Each PR is automatically deployed to [Vercel](https://vercel.com/?utm_source=packagephobia) via the [GitHub Integration](https://vercel.com/github).
+This fork supports two deployment paths to Vercel:
 
-If you want to deploy from the command line, you'll need to install [Vercel](https://vercel.com) CLI with `npm i -g vercel`.
+### Option 1: Vercel GitHub Integration (Dashboard)
 
-Then you can simply run `vercel` to deploy.
+1. Import your fork in the [Vercel Dashboard](https://vercel.com/new)
+2. Set the `REDIS_URL` environment variable (e.g., from [Upstash](https://upstash.com))
+3. Vercel will automatically deploy on every push to `main` and create preview deployments for PRs
+
+### Option 2: GitHub Actions with Vercel Token
+
+1. Create a Vercel project for your fork (via dashboard or `vercel` CLI)
+2. Get your credentials:
+   - `VERCEL_TOKEN`: Create in [Vercel Account Settings → Tokens](https://vercel.com/account/tokens)
+   - `VERCEL_ORG_ID`: Find in your Vercel team settings or `.vercel/project.json` after running `vercel link`
+   - `VERCEL_PROJECT_ID`: Find in project settings or `.vercel/project.json` after running `vercel link`
+3. Add these as [GitHub Repository Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+4. Set `REDIS_URL` in your Vercel project environment variables (all environments)
+5. Push to `main` or open a PR to trigger the deploy workflow
+
+Both paths can coexist. The GitHub Action workflow (`.github/workflows/deploy-vercel.yml`) will deploy when secrets are configured.
+
+### Local Development Deployment
+
+If you want to deploy from the command line, install [Vercel](https://vercel.com) CLI with `npm i -g vercel`.
+
+Then run `vercel` to deploy a preview, or `vercel --prod` for production.
 
 ## Submitting a PR
 
