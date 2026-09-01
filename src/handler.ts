@@ -9,7 +9,7 @@ import { parsePackageString } from './util/npm-parser';
 import semver from 'semver';
 import { fetchManifest } from './util/npm-api';
 import { NotFoundError } from './util/not-found-error';
-import type { ApiResponseV1, ApiResponseV2, PackageJson } from './types';
+import type { ApiResponseV1, ApiResponseV2, PackageJson, NpmManifest } from './types';
 
 const { TMPDIR = '/tmp', GA_ID = '', NODE_ENV } = process.env;
 process.env.HOME = TMPDIR;
@@ -59,7 +59,7 @@ export async function handler(req: IncomingMessage, res: ServerResponse) {
     try {
         if (pathname === pages.badge) {
             const parsed = parsePackageString(query.p as string);
-            let manifest;
+            let manifest: NpmManifest | null = null;
             try {
                 manifest = await fetchManifest(parsed.name);
             } catch (err) {
@@ -78,7 +78,7 @@ export async function handler(req: IncomingMessage, res: ServerResponse) {
             res.end(getBadgeSvg(pkgSize));
         } else if (pathname === pages.apiv1 || pathname === pages.apiv2) {
             const parsed = parsePackageString(query.p as string);
-            const manifest = await fetchManifest(parsed.name);
+            const manifest: NpmManifest | null = await fetchManifest(parsed.name);
             const { pkgSize, cacheResult } = await getPkgDetails(
                 manifest,
                 parsed.name,

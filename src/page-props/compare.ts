@@ -1,6 +1,6 @@
 import { fetchManifest } from '../util/npm-api';
 import { getPkgDetails } from './common';
-import type { CompareProps, PackageVersion } from '../types';
+import type { CompareProps, PackageVersion, NpmManifest } from '../types';
 
 export async function getCompareProps(
     inputStr: string,
@@ -9,7 +9,7 @@ export async function getCompareProps(
     tmpDir: string,
 ): Promise<CompareProps> {
     const promises = pkgVersions.map(async ({ name, version }) => {
-        const manifest = await fetchManifest(name);
+        const manifest: NpmManifest | null = await fetchManifest(name);
         return getPkgDetails(manifest, name, version, force, tmpDir);
     });
     const results = await Promise.all(promises);

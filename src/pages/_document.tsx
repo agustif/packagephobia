@@ -147,7 +147,7 @@ export async function renderPage(
             const first = pkgVersions[0];
             if (first) {
                 manifest = await fetchManifest(first.name);
-                if (pkgVersions.length === 1) {
+                if (manifest && pkgVersions.length === 1) {
                     title = `${manifest.name} - Package Phobia`;
                     description = `Find the size of the ${manifest.name} dependency before you npm install.`;
                 }
